@@ -15,6 +15,16 @@ type FlagReg struct {
 	z, n, h, c int
 }
 
+//const (
+//	A
+//	B
+//	C
+//	D
+//	E
+//	H
+//	L
+//)
+
 func (f *FlagReg) toInt() int {
 	return f.z<<7 | f.n<<6 | f.h<<5 | f.c<<4
 }
@@ -46,6 +56,39 @@ const (
 	BIT_7
 )
 
-func (cpu *Cpu) loadImm(reg *int, val int) {
-	*reg = val
+func (cpu *Cpu) tick() {
+	// Read current opcode from memory
+	// Decode instruction
+	// Build Instruction object
+	// Place it as current instruction inside CPU
+	// Call corresponding method
 }
+
+// Fetches the next instruction
+func (cpu *Cpu) fetch() int {
+	opcode := cpu.m.Read(cpu.pc)
+	cpu.pc++
+
+	return opcode
+}
+
+// Creates a new instruction from the given opcode,
+// containing the operands (if any)
+func (cpu *Cpu) decode(opcode int) Instruction {
+	instr := instructionSet[opcode]
+
+	for i := instr.size - 1; i < instr.size; i++ {
+		instr.operands[i] = cpu.m.Read(cpu.pc)
+		cpu.pc++
+	}
+
+	return instr
+}
+
+//func (cpu *Cpu) ld_n_nn(reg *int, val int) {
+//	*reg = val
+//}
+//
+//func (cpu *Cpu) ld_r1_r2(reg1, reg2 *int) {
+//	*reg1 = *reg2
+//}
