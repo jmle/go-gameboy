@@ -53,7 +53,8 @@ func TestDecode(t *testing.T) {
 		// Populate expected instruction with operands
 		tt.expectedInstr.operands = tt.expectedOperands
 
-		instr := cpu.decode(tt.opcode)
+		cpu.decode(tt.opcode)
+		instr := cpu.nextInstr
 
 		if instr != tt.expectedInstr {
 			t.Errorf("Expected %+v, got %+v\n", tt.expectedInstr, instr)

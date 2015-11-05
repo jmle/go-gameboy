@@ -9,6 +9,9 @@ type Cpu struct {
 
 	// Memory
 	m Memory
+
+	// Next instruction to execute
+	nextInstr Instruction
 }
 
 type FlagReg struct {
@@ -74,7 +77,7 @@ func (cpu *Cpu) fetch() int {
 
 // Creates a new instruction from the given opcode,
 // containing the operands (if any)
-func (cpu *Cpu) decode(opcode int) Instruction {
+func (cpu *Cpu) decode(opcode int) {
 	instr := instructionSet[opcode]
 
 	for i := 0; i < instr.size-1; i++ {
@@ -82,7 +85,7 @@ func (cpu *Cpu) decode(opcode int) Instruction {
 		cpu.pc++
 	}
 
-	return instr
+	cpu.nextInstr = instr
 }
 
 //func (cpu *Cpu) ld_n_nn(reg *int, val int) {
