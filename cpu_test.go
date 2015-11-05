@@ -16,53 +16,52 @@ func (m *Memory) Write(addr, val int) {
 	m.memory[addr] = val
 }
 
-func testDecodeWithSize1(t *testing.T) {
-	cpu := Cpu{m: Memory{}}
+func TestDecode(t *testing.T) {
+	for _, tt := range []struct {
+		testName         string
+		opcode           int
+		expectedInstr    Instruction
+		expectedOperands [2]int
+	}{
+		{
+			testName:      "Decode with size 1",
+			opcode:        0x00,
+			expectedInstr: instructionSet[0x00],
+		},
+		{
+			testName:         "Decode with size 2",
+			opcode:           0x06,
+			expectedInstr:    instructionSet[0x06],
+			expectedOperands: [2]int{2},
+		},
+		{
+			testName:         "Decode with size 3",
+			opcode:           0x08,
+			expectedInstr:    instructionSet[0x08],
+			expectedOperands: [2]int{2, 4},
+		},
+	} {
+		t.Log(tt.testName)
 
-	expectedInstr := instructionSet[0x00]
+		cpu := Cpu{m: Memory{}}
 
-	instr := cpu.decode(0)
+		// Populate memory with operands
+		for i := 0; i < tt.expectedInstr.size-1; i++ {
+			cpu.m.Write(i, tt.expectedOperands[i])
+		}
 
-	if instr != expectedInstr {
-		t.Errorf("Expected %+v, got %+v\n", expectedInstr, instr)
-	}
-}
+		// Populate expected instruction with operands
+		tt.expectedInstr.operands = tt.expectedOperands
 
-func testDecodeWithSize2(t *testing.T) {
-	cpu := Cpu{m: Memory{}}
-	cpu.m.Write(0, 2)
+		instr := cpu.decode(tt.opcode)
 
-	expectedInstr := instructionSet[0x06]
-	expectedInstr.operands[0] = 2
+		if instr != tt.expectedInstr {
+			t.Errorf("Expected %+v, got %+v\n", tt.expectedInstr, instr)
+		}
 
-	instr := cpu.decode(0x06)
-
-	if instr != expectedInstr {
-		t.Errorf("Expected %+v, got %+v\n", expectedInstr, instr)
-	}
-
-	if cpu.pc != 1 {
-		t.Errorf("Expected %+v, got %+v\n", 1, cpu.pc)
-	}
-}
-
-func testDecodeWithSize3(t *testing.T) {
-	cpu := Cpu{m: Memory{}}
-	cpu.m.Write(0, 2)
-	cpu.m.Write(1, 4)
-
-	expectedInstr := instructionSet[0x08]
-	expectedInstr.operands[0] = 2
-	expectedInstr.operands[1] = 4
-
-	instr := cpu.decode(0x08)
-
-	if instr != expectedInstr {
-		t.Errorf("Expected %+v, got %+v\n", expectedInstr, instr)
-	}
-
-	if cpu.pc != 2 {
-		t.Errorf("Expected %+v, got %+v\n", 2, cpu.pc)
+		if cpu.pc != tt.expectedInstr.size-1 {
+			t.Errorf("Expected %+v, got %+v\n", tt.expectedInstr.size-1, cpu.pc)
+		}
 	}
 }
 

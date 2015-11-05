@@ -77,7 +77,7 @@ func (cpu *Cpu) fetch() int {
 func (cpu *Cpu) decode(opcode int) Instruction {
 	instr := instructionSet[opcode]
 
-	for i := instr.size - 1; i < instr.size; i++ {
+	for i := 0; i < instr.size-1; i++ {
 		instr.operands[i] = cpu.m.Read(cpu.pc)
 		cpu.pc++
 	}
