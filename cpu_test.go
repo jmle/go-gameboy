@@ -56,7 +56,7 @@ func TestDecode(t *testing.T) {
 		cpu.decode(tt.opcode)
 		instr := cpu.nextInstr
 
-		if instr != tt.expectedInstr {
+		if !instructionsEqual(tt.expectedInstr, instr) {
 			t.Errorf("Expected %+v, got %+v\n", tt.expectedInstr, instr)
 		}
 
@@ -64,6 +64,28 @@ func TestDecode(t *testing.T) {
 			t.Errorf("Expected %+v, got %+v\n", tt.expectedInstr.size-1, cpu.pc)
 		}
 	}
+}
+
+func TestNop(t *testing.T) {
+	cpu := Cpu{m: Memory{}}
+
+	cpu.decode(0x00)
+
+	instr := cpu.nextInstr
+	operation := instr.operation
+
+	operation(&cpu)
+}
+
+// Compares Instructions skipping the operation field
+func instructionsEqual(instr1, instr2 Instruction) bool {
+	cmpName := instr1.name == instr2.name
+	cmpSize := instr1.size == instr2.size
+	cmpCycles := instr1.cycles == instr2.cycles
+	cmpOperands := instr1.operands == instr2.operands
+
+	return cmpName && cmpCycles && cmpSize && cmpOperands
+
 }
 
 //func testLdRegWithImm(t *testing.T) {

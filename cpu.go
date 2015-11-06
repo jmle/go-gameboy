@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Cpu struct {
 	// Registers
 	pc, sp           int // Program counter, Stack pointer
@@ -86,6 +88,10 @@ func (cpu *Cpu) decode(opcode int) {
 	}
 
 	cpu.nextInstr = instr
+}
+
+func (cpu *Cpu) nop() {
+	fmt.Println("NOP")
 }
 
 //func (cpu *Cpu) ld_n_nn(reg *int, val int) {

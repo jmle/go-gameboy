@@ -1,15 +1,16 @@
 package main
 
 type Instruction struct {
-	name     string
-	size     int
-	cycles   int
-	operands [2]int
+	name      string
+	size      int
+	cycles    int
+	operands  [2]int
+	operation func(*Cpu)
 }
 
 // Instruction set info extracted from http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
 var instructionSet = map[int]Instruction{
-	0x0:  Instruction{name: "NOP", size: 1, cycles: 4},
+	0x0:  Instruction{name: "NOP", size: 1, cycles: 4, operation: (*Cpu).nop},
 	0x1:  Instruction{name: "LD BC,d16", size: 3, cycles: 12},
 	0x2:  Instruction{name: "LD (BC),A", size: 1, cycles: 8},
 	0x3:  Instruction{name: "INC BC", size: 1, cycles: 8},
