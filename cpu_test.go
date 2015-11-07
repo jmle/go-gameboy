@@ -56,7 +56,7 @@ func TestDecode(t *testing.T) {
 		cpu.decode(tt.opcode)
 		instr := cpu.nextInstr
 
-		if !instructionsEqual(tt.expectedInstr, instr) {
+		if !instr.Equals(tt.expectedInstr) {
 			t.Errorf("Expected %+v, got %+v\n", tt.expectedInstr, instr)
 		}
 
@@ -78,7 +78,7 @@ func TestNop(t *testing.T) {
 }
 
 // Compares Instructions skipping the operation field
-func instructionsEqual(instr1, instr2 Instruction) bool {
+func (instr1 *Instruction) Equals(instr2 Instruction) bool {
 	cmpName := instr1.name == instr2.name
 	cmpSize := instr1.size == instr2.size
 	cmpCycles := instr1.cycles == instr2.cycles
