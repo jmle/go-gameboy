@@ -20,15 +20,19 @@ type FlagReg struct {
 	z, n, h, c int
 }
 
-//const (
-//	A
-//	B
-//	C
-//	D
-//	E
-//	H
-//	L
-//)
+const (
+	A = iota
+	B
+	C
+	D
+	E
+	H
+	L
+	BC
+	HL
+	DE
+	SP
+)
 
 func (f *FlagReg) toInt() int {
 	return f.z<<7 | f.n<<6 | f.h<<5 | f.c<<4
